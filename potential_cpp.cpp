@@ -12,7 +12,7 @@ namespace py = pybind11;
 
 double V_potential(const std::array<double, 2> &grid_pos,
                    const double *x_coords, const double *y_coords,
-                   const int *charges, const py::ssize_t &num_particles) {
+                   const int *charges, const py::ssize_t num_particles) {
   double v = 0;
   for (py::ssize_t i = 0; i < num_particles; ++i) {
     double delta_x = grid_pos[0] - x_coords[i];
@@ -25,11 +25,12 @@ double V_potential(const std::array<double, 2> &grid_pos,
   return v;
 }
 
-std::unique_ptr<double[]>
-calc_potential_grid(const double *x_coords, const double *y_coords,
-                    const std::size_t &grid_resolution, const int *charges,
-                    const std::size_t &num_particles,
-                    const int &num_threads = 1) {
+std::unique_ptr<double[]> calc_potential_grid(const double *x_coords,
+                                              const double *y_coords,
+                                              const std::size_t grid_resolution,
+                                              const int *charges,
+                                              const std::size_t num_particles,
+                                              const int num_threads = 1) {
   std::unique_ptr<double[]> potential_grid(
       new double[grid_resolution * grid_resolution]);
   double grid_res_dbl = static_cast<double>(grid_resolution);
@@ -57,9 +58,9 @@ calc_potential_grid(const double *x_coords, const double *y_coords,
 py::array_t<double>
 py_calc_potential_grid(const py::array_t<double, py::array::c_style> &x_coords,
                        const py::array_t<double, py::array::c_style> &y_coords,
-                       const std::size_t &grid_resolution,
+                       const std::size_t grid_resolution,
                        const py::array_t<int, py::array::c_style> &charges,
-                       const int &num_threads = 1) {
+                       const int num_threads = 1) {
 
   auto x_coords_buf = x_coords.request();
   auto y_coords_buf = y_coords.request();
