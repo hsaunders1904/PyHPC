@@ -12,9 +12,9 @@ namespace py = pybind11;
 
 double V_potential(const std::array<double, 2> &grid_pos,
                    const double *x_coords, const double *y_coords,
-                   const int *charges, const py::ssize_t num_particles) {
+                   const int *charges, const std::size_t num_particles) {
   double v = 0;
-  for (py::ssize_t i = 0; i < num_particles; ++i) {
+  for (std::size_t i = 0; i < num_particles; ++i) {
     double delta_x = grid_pos[0] - x_coords[i];
     double delta_y = grid_pos[1] - y_coords[i];
     double dist = sqrt(delta_x * delta_x + delta_y * delta_y);
