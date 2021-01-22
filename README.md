@@ -24,7 +24,7 @@ but install the requirements using pip may also work.
 1) Create a Conda environment
 
    ```shell
-   conda install --file requirements.txt -c conda-forge
+   conda create -n hpc --file requirements.txt -c conda-forge
    ```
 
 2) To build the C++ library you'll need a C++ compiler.
