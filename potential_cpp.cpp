@@ -3,7 +3,6 @@
 
 #include <array>
 #include <cmath>
-#include <limits>
 #include <memory>
 #include <omp.h>
 #include <vector>
