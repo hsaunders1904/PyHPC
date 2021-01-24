@@ -68,7 +68,7 @@ py_calc_potential_grid(const py::array_t<double, py::array::c_style> &x_coords,
   if (x_coords_buf.ndim != 1 || y_coords_buf.ndim != 1 ||
       charges_buf.ndim != 1) {
     throw std::runtime_error(
-        "x_coords, y_coords and charges must be 1D arrays.");
+        "x_coords, y_coords and charges must be 1D numpy arrays.");
   }
   if (x_coords_buf.size != y_coords_buf.size ||
       x_coords_buf.size != charges_buf.size) {
