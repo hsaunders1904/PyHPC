@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.10)
 
 project(PY_HPC LANGUAGES CXX)
 
+if(MSVC)
+  add_compile_options("/W3" "/O2")
+elseif(GCC)
+  add_compile_options("-Wall" "-O3")
+endif()
+
 find_package(pybind11 REQUIRED)
 find_package(OpenMP REQUIRED)
 
