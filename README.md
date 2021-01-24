@@ -19,12 +19,13 @@ The example is implemented, and benchmarked, using several tools:
 ## Windows Setup Instructions
 
 I set this up using a Conda environment,
-but install the requirements using pip may also work.
+but installing the requirements via pip may also work.
 
 1) Create a Conda environment
 
    ```shell
-   conda create -n hpc --file requirements.txt -c conda-forge
+   conda create -n hpc python=3.7
+   conda install --file requirements.txt -c conda-forge
    ```
 
 2) To build the C++ library you'll need a C++ compiler.
