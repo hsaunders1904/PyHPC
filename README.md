@@ -25,6 +25,7 @@ but installing the requirements via pip may also work.
 
    ```shell
    conda create -n hpc python=3.7
+   conda activate hpc
    conda install --file requirements.txt -c conda-forge
    ```
 
