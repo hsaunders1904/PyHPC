@@ -14,7 +14,7 @@ cython_ext = extension.Extension(
 )
 
 cpp_ext = extension.Extension(
-    "potential.pyhpc_cpp",
+    "potential._cpp_lib",
     sources=[os.path.join(ROOT_DIR, "potential_cpp.cpp")],
     include_dirs=[pybind11.get_include()],
     language="c++"
@@ -27,5 +27,5 @@ setup(
     packages=find_packages(exclude=["*tests*"]),
     package_dir={"": "src"},
     ext_modules=cythonize(cython_ext) + [cpp_ext],
-    setup_requires=["cmake", "cython", "numpy", "pybind11"]
+    setup_requires=["cython", "numpy", "pybind11"]
 )

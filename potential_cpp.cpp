@@ -99,7 +99,7 @@ py_calc_potential_grid(const py::array_t<double, py::array::c_style> &x_coords,
       potential_grid.release(), free_when_done);
 }
 
-PYBIND11_MODULE(pyhpc_cpp, m) {
+PYBIND11_MODULE(_cpp_lib, m) {
   m.def("calc_potential_grid", &py_calc_potential_grid,
         "Calculate potential of grid points caused by given particles.");
 }

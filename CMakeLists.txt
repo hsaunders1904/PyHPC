@@ -16,6 +16,6 @@ set(PYBIND11_PYTHON_VERSION
 find_package(pybind11 REQUIRED)
 find_package(OpenMP REQUIRED)
 
-set(PY_LIB_NAME "pyhpc_cpp")
+set(PY_LIB_NAME "_cpp_lib")
 pybind11_add_module(${PY_LIB_NAME} potential_cpp.cpp)
 target_link_libraries(${PY_LIB_NAME} PRIVATE OpenMP::OpenMP_CXX)
