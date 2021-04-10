@@ -3,7 +3,7 @@ import math
 import numpy as np
 import pyopencl as cl
 
-from potential.cl_utils import get_device
+from potential._cl_utils import get_device
 from potential._cl_kernel import KERNEL
 
 
