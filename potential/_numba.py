@@ -13,7 +13,6 @@ def potential_numba(particle_coords, grid_resolution, charges):
     xx = yy.T
 
     # Increment the matrix for each particle
-    num_particles = particle_coords.shape[0]
     for coords, charge in zip(particle_coords, charges):
         delta_x = np.square(xx - coords[0])
         delta_y = np.square(yy - coords[1])
