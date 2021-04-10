@@ -41,7 +41,7 @@ std::unique_ptr<double[]> calc_potential_grid(const double *x_coords,
 #pragma omp for schedule(static)
     for (long i = 0; i < grid_resolution; ++i) {
       for (long j = 0; j < grid_resolution; ++j) {
-        grid_pos = {i / grid_res_dbl, j / grid_res_dbl};
+        grid_pos = {i / (grid_res_dbl - 1), j / (grid_res_dbl - 1)};
         auto v =
             V_potential(grid_pos, x_coords, y_coords, charges, num_particles);
         potential_grid[i + grid_resolution * j] = v;
