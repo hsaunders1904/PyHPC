@@ -3,13 +3,39 @@ import os
 import numpy as np
 import pytest
 
-from potential import _potential as potential
+from potential.grid import calculate_grid
 
-POTENTIAL_FUNCTIONS = {
-    potential.potential_cpp, potential.potential_np, potential.potential_py,
-    potential.potential_numba, potential.potential_cl_cpu,
-    potential.potential_cl_gpu, potential.potential_cuda,
-    potential.potential_cython
+arg_combos = {
+    "python": {
+        "func": "python",
+    },
+    "numpy": {
+        "func": "numpy",
+    },
+    "numba": {
+        "func": "numba",
+    },
+    "cython": {
+        "func": "cython",
+    },
+    "cpp_1_thread": {
+        "num_threads": 1
+    },
+    "cpp_max_threads": {
+        "func": "cpp",
+        "num_threads": os.cpu_count()
+    },
+    "opencl_cpu": {
+        "func": "opencl",
+        "device_type": "CPU"
+    },
+    "opencl_gpu": {
+        "func": "opencl",
+        "device_type": "GPU"
+    },
+    "cuda": {
+        "func": "cuda"
+    }
 }
 
 
@@ -24,10 +50,12 @@ class TestPotential:
         with open(ref_10x10_file, "rb") as f:
             cls.ref_10x10_grid = np.fromfile(f).reshape((10, 10))
 
-    @pytest.mark.parametrize("func", POTENTIAL_FUNCTIONS)
-    def test_potential_grid_equals_10x10_ref_file(self, func):
+    @pytest.mark.parametrize(
+        "kwargs", arg_combos.values(), ids=arg_combos.keys()
+    )
+    def test_potential_grid_equals_10x10_ref_file(self, kwargs):
         ref_params = TestPotential.get_ref_data_params()
-        out = func(*ref_params)
+        out = calculate_grid(*ref_params, **kwargs)
         assert np.allclose(out, self.ref_10x10_grid)
 
     @staticmethod
@@ -41,7 +69,7 @@ class TestPotential:
     def generate_reference_file():
         ref_params = TestPotential.get_ref_data_params()
         # Use the Python implementation to generate regression test data
-        pot_grid_np = potential.potential_py(*ref_params)
+        pot_grid_np = calculate_grid(*ref_params, func="python")
 
         test_data_dir = os.path.join(os.path.dirname(__file__), "data")
         ref_10x10_file = os.path.join(test_data_dir, "ref_10x10_grid.ndarray")
