@@ -8,7 +8,8 @@ from potential import _potential as potential
 POTENTIAL_FUNCTIONS = {
     potential.potential_cpp, potential.potential_np, potential.potential_py,
     potential.potential_numba, potential.potential_cl_cpu,
-    potential.potential_cl_gpu, potential.potential_cuda
+    potential.potential_cl_gpu, potential.potential_cuda,
+    potential.potential_cython
 }
 
 
