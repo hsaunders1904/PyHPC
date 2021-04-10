@@ -1,2 +1,4 @@
-# Ignore auto-generated C file
+# Ignore auto-generated files
 _cython.c
+*.pyd
+*.so
