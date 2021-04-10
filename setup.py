@@ -7,11 +7,13 @@ import pybind11
 
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
-cython_ext = extension.Extension(
-    "potential._cython",
-    [os.path.join(ROOT_DIR, "src", "potential", "_cython.pyx")],
-    include_dirs=[np.get_include()],
-)
+cython_ext = cythonize(
+    extension.Extension(
+        "potential._cython",
+        [os.path.join(ROOT_DIR, "src", "potential", "_cython.pyx")],
+        include_dirs=[np.get_include()],
+    )
+)[0]
 
 cpp_ext = extension.Extension(
     "potential._cpp_lib",
@@ -26,6 +28,6 @@ setup(
     url="https://github.com/hsaunders1904/PyHPC",
     packages=find_packages(exclude=["*tests*"]),
     package_dir={"": "src"},
-    ext_modules=cythonize(cython_ext) + [cpp_ext],
+    ext_modules=[cython_ext, cpp_ext],
     setup_requires=["cython", "numpy", "pybind11"]
 )
