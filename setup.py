@@ -22,7 +22,9 @@ class ExtensionBuilder(build_ext_orig):
     """
 
     def run(self):
+        # make sure to run the super class, which builds our Cython library
         super().run()
+
         for ext in self.extensions:
             self.build_extension(ext)
 

@@ -94,8 +94,9 @@ py_calc_potential_grid(const py::array_t<double, py::array::c_style> &x_coords,
     delete[] potential_grid;
   });
 
-  return py::array_t<double>({grid_resolution * grid_resolution},
-                             potential_grid.release(), free_when_done);
+  return py::array_t<double>(
+      {static_cast<long>(grid_resolution * grid_resolution)},
+      potential_grid.release(), free_when_done);
 }
 
 PYBIND11_MODULE(pyhpc_cpp, m) {
