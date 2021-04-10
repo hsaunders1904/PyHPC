@@ -25,12 +25,12 @@ def calculate_grid(
     :param charges: 1xN array specifying the charge of each particle.
     :type charges: np.array
     :param func: The method to use to calculate the grid, one of:
-        - "python"
-        - "numpy"
+        - "python" or "py"
+        - "numpy" or "np"
         - "numba"
         - "cython"
         - "cpp"
-        - "opencl"
+        - "opencl" or "cl"
         - "cuda"
         Default is "numpy".
     :type func: str
