@@ -48,9 +48,6 @@ class PotentialCL:
             grid_resolution, num_particles, potential_grid_buf
         )
 
-        print()
-        [print(x) for x in [self.queue, global_id_sizes, None, *kernel_args]]
-        print()
         self.program.potential_cl(
             self.queue, global_id_sizes, None, *kernel_args
         )
@@ -97,9 +94,7 @@ def potential_cl_cpu(particle_coords, grid_resolution, charges):
     )
 
 
-def potential_cl_gpu(
-    particle_coords, grid_resolution, charges, gpu_name="Nvidia"
-):
+def potential_cl_gpu(particle_coords, grid_resolution, charges, gpu_name=None):
     return _potential_cl(
         particle_coords, grid_resolution, charges, "GPU", gpu_name
     )
