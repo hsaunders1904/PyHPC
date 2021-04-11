@@ -1,7 +1,7 @@
 [build-system]
 requires = [
-    "Cython",
-    "numpy",
+    "Cython==0.29.21",
+    "numpy==1.19.2",
     "pybind11",
     "setuptools",
     "wheel"
