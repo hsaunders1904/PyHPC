@@ -1,0 +1,13 @@
+from argparse import ArgumentParser
+
+from pyhpc.mpi._mpi import run_and_plot
+
+parser = ArgumentParser("Run calculate_grid using MPI.")
+parser.add_argument("num_particles", type=int)
+parser.add_argument("grid_resolution", type=int)
+parser.add_argument(
+    "-d", "--dist", choices={"circle", "random"}, default="random"
+)
+args = parser.parse_args()
+
+run_and_plot(**vars(args))
