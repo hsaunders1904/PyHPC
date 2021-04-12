@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 
-@numba.jit(nopython=True, parallel=True)
+@numba.jit(nopython=True, nogil=True, parallel=True, cache=True)
 def potential_numba(particle_coords, grid_resolution, charges):
     potential_grid = np.zeros((grid_resolution, grid_resolution))
 
