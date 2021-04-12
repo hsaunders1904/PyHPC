@@ -39,7 +39,7 @@ arg_combos = {
 }
 
 
-class TestGrid:
+class TestPotential:
 
     ref_10x10_grid = None
 
@@ -67,7 +67,7 @@ class TestGrid:
 
     @staticmethod
     def generate_reference_file():
-        ref_params = TestGrid.get_ref_data_params()
+        ref_params = TestPotential.get_ref_data_params()
         # Use the Python implementation to generate regression test data
         pot_grid_np = calculate_grid(*ref_params, func="python")
 
@@ -78,4 +78,4 @@ class TestGrid:
 
 
 if __name__ == "__main__":
-    TestGrid.generate_reference_file()
+    TestPotential.generate_reference_file()
