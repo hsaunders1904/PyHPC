@@ -6,7 +6,7 @@ from pycuda.compiler import SourceModule
 from potential._cuda_kernel import FUNC_NAME, KERNEL
 
 
-class PotentialCuda:
+class _PotentialCuda:
 
     def __init__(self, kernel, func_name, dtype="float64"):
         self._dtype = dtype
@@ -58,6 +58,8 @@ class PotentialCuda:
         return grid
 
 
+_FUNC = _PotentialCuda(KERNEL, FUNC_NAME)
+
+
 def potential_cuda(particle_coords, grid_resolution, charges):
-    func = PotentialCuda(KERNEL, FUNC_NAME)
-    return func(particle_coords, grid_resolution, charges)
+    return _FUNC(particle_coords, grid_resolution, charges)

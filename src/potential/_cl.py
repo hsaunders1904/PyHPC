@@ -7,7 +7,7 @@ from potential._cl_utils import get_device
 from potential._cl_kernel import KERNEL
 
 
-class PotentialCL:
+class _PotentialCL:
 
     def __init__(self, kernel, device_type=None, device_name=None):
         # Create a context and compile the OpenCL kernel for the device
@@ -74,13 +74,15 @@ class PotentialCL:
         )
 
 
-def _potential_cl(
-    particle_coords, grid_resolution, charges, device_type, gpu_name
-):
+_CPU_FUNC = _PotentialCL(KERNEL, device_type="CPU")
+_GPU_FUNC = _PotentialCL(KERNEL, device_type="GPU")
+
+
+def _potential_cl(particle_coords, grid_resolution, charges, device_type):
     if device_type == "CPU":
-        func = PotentialCL(KERNEL, device_type="CPU")
+        func = _CPU_FUNC
     elif device_type == "GPU":
-        func = PotentialCL(KERNEL, device_type="GPU", device_name=gpu_name)
+        func = _GPU_FUNC
 
     particle_coords = particle_coords.astype("float64")
     grid_resolution = np.int32(grid_resolution)
@@ -89,12 +91,8 @@ def _potential_cl(
 
 
 def potential_cl_cpu(particle_coords, grid_resolution, charges):
-    return _potential_cl(
-        particle_coords, grid_resolution, charges, "CPU", None
-    )
+    return _potential_cl(particle_coords, grid_resolution, charges, "CPU")
 
 
-def potential_cl_gpu(particle_coords, grid_resolution, charges, gpu_name=None):
-    return _potential_cl(
-        particle_coords, grid_resolution, charges, "GPU", gpu_name
-    )
+def potential_cl_gpu(particle_coords, grid_resolution, charges):
+    return _potential_cl(particle_coords, grid_resolution, charges, "GPU")
