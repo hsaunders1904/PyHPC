@@ -1,6 +1,6 @@
 import numpy as np
 
-from potential._cpp_lib import calc_potential_grid
+from pyhpc._cpp_lib import calc_potential_grid
 
 
 def potential_cpp(particle_coords, grid_resolution, charges, num_threads=1):

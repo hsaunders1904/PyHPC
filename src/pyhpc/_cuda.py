@@ -3,7 +3,7 @@ import pycuda.autoinit  # must be imported so Cuda can compile things
 import pycuda.driver as drv
 from pycuda.compiler import SourceModule
 
-from potential._cuda_kernel import FUNC_NAME, KERNEL
+from pyhpc._cuda_kernel import FUNC_NAME, KERNEL
 
 
 class _PotentialCuda:

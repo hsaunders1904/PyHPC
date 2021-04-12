@@ -1,10 +1,10 @@
-from potential._cpp import potential_cpp
-from potential._numpy import potential_np
-from potential._py import potential_py
-from potential._numba import potential_numba
-from potential._cython import potential_cython
-from potential._cl import potential_cl_cpu, potential_cl_gpu
-from potential._cuda import potential_cuda
+from pyhpc._cpp import potential_cpp
+from pyhpc._numpy import potential_np
+from pyhpc._py import potential_py
+from pyhpc._numba import potential_numba
+from pyhpc._cython import potential_cython
+from pyhpc._cl import potential_cl_cpu, potential_cl_gpu
+from pyhpc._cuda import potential_cuda
 
 
 def calculate_grid(

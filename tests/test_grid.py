@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pytest
 
-from potential.grid import calculate_grid
+from pyhpc.grid import calculate_grid
 
 arg_combos = {
     "python": {
