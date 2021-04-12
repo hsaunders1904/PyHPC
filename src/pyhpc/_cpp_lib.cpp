@@ -32,16 +32,17 @@ std::unique_ptr<double[]> calc_potential_grid(const double *x_coords,
                                               const int num_threads = 1) {
   std::unique_ptr<double[]> potential_grid(
       new double[grid_resolution * grid_resolution]);
-  double grid_res_dbl = static_cast<double>(grid_resolution);
+
+  const double grid_step_denom = static_cast<double>(grid_resolution) - 1.0;
   std::array<double, 2> grid_pos;
 
-#pragma omp parallel firstprivate(grid_res_dbl), private(grid_pos),            \
+#pragma omp parallel firstprivate(grid_step_denom), private(grid_pos),         \
     num_threads(num_threads)
   {
 #pragma omp for schedule(static)
     for (long i = 0; i < grid_resolution; ++i) {
       for (long j = 0; j < grid_resolution; ++j) {
-        grid_pos = {i / (grid_res_dbl - 1), j / (grid_res_dbl - 1)};
+        grid_pos = {i / grid_step_denom, j / grid_step_denom};
         auto v =
             V_potential(grid_pos, x_coords, y_coords, charges, num_particles);
         potential_grid[i + grid_resolution * j] = v;
