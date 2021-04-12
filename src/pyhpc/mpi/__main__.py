@@ -8,6 +8,7 @@ parser.add_argument("grid_resolution", type=int)
 parser.add_argument(
     "-d", "--dist", choices={"circle", "random"}, default="random"
 )
+parser.add_argument("-f", "--func", default="numpy")
 args = parser.parse_args()
 
 run_and_plot(**vars(args))
