@@ -19,11 +19,17 @@ def read_requirements_file():
         return [req.strip() for req in f.readlines()]
 
 
+if platform.system() == "Windows":
+    extra_compile_args = ["/openmp", "/Ox"]
+elif platform.system() == "Linux":
+    extra_compile_args = ["-openmp", "-O3"]
+
 cython_ext = cythonize(
     extension.Extension(
         "pyhpc._cython",
         [os.path.join(ROOT_DIR, "src", "pyhpc", "_cython.pyx")],
         include_dirs=[np.get_include()],
+        extra_compile_args=extra_compile_args
     )
 )[0]
 
@@ -31,7 +37,8 @@ cpp_ext = extension.Extension(
     "pyhpc._cpp_lib",
     sources=[os.path.join(ROOT_DIR, "potential_cpp.cpp")],
     include_dirs=[pybind11.get_include()],
-    language="c++"
+    language="c++",
+    extra_compile_args=extra_compile_args
 )
 
 setup(
