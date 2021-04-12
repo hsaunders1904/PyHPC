@@ -39,7 +39,7 @@ arg_combos = {
 }
 
 
-class TestPotential:
+class TestGrid:
 
     ref_10x10_grid = None
 
@@ -54,7 +54,7 @@ class TestPotential:
         "kwargs", arg_combos.values(), ids=arg_combos.keys()
     )
     def test_potential_grid_equals_10x10_ref_file(self, kwargs):
-        ref_params = TestPotential.get_ref_data_params()
+        ref_params = self.get_ref_data_params()
         out = calculate_grid(*ref_params, **kwargs)
         assert np.allclose(out, self.ref_10x10_grid)
 
@@ -67,7 +67,7 @@ class TestPotential:
 
     @staticmethod
     def generate_reference_file():
-        ref_params = TestPotential.get_ref_data_params()
+        ref_params = TestGrid.get_ref_data_params()
         # Use the Python implementation to generate regression test data
         pot_grid_np = calculate_grid(*ref_params, func="python")
 
@@ -78,4 +78,4 @@ class TestPotential:
 
 
 if __name__ == "__main__":
-    TestPotential.generate_reference_file()
+    TestGrid.generate_reference_file()
