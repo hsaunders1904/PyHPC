@@ -1,11 +1,10 @@
 import os
 import platform
-
-from Cython.Build import cythonize
 from setuptools import find_packages, setup, extension
 
 import numpy as np
 import pybind11
+from Cython.Build import cythonize
 
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -35,7 +34,7 @@ cython_ext = cythonize(
 
 cpp_ext = extension.Extension(
     "pyhpc._cpp_lib",
-    sources=[os.path.join(ROOT_DIR, "potential_cpp.cpp")],
+    sources=[os.path.join(ROOT_DIR, "src", "pyhpc", "_cpp_lib.cpp")],
     include_dirs=[pybind11.get_include()],
     language="c++",
     extra_compile_args=extra_compile_args
