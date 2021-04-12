@@ -50,7 +50,7 @@ plot_potential_grid(potential_grid)
 
 ![img](resources/readme_sample_grid.png)
 
-You can also run the MPI implementation from the command line:
+For now, you need to run the MPI implementation from the command line:
 
 ```shell
 >> mpiexec -n 4 python -m pyhpc.mpi 150 1024 --dist random --func cython
