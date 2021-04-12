@@ -46,11 +46,6 @@ def calculate_grid(
         either 'CPU' or 'GPU'. This option only applies if 'func' is
         'opencl'. Default is 'CPU'.
     :type device_type: str
-    :key gpu_name: The name of the brand of GPU to run the calculation
-        on. This option only applies if 'func' is 'opencl' and
-        'device_type' is 'GPU'. Default is to use first found, an error
-        is thrown if no matching GPU can be found.
-    :type device_name: str
     """
     args = (particle_coords, grid_resolution, charges)
     if func.lower() in ["py", "python"]:
@@ -68,8 +63,7 @@ def calculate_grid(
         if device_type == "CPU":
             return potential_cl_cpu(*args)
         elif device_type == "GPU":
-            gpu_name = kwargs.pop("gpu_name", None)
-            return potential_cl_gpu(*args, gpu_name=gpu_name)
+            return potential_cl_gpu(*args)
         else:
             raise ValueError(
                 f"Invalid device type. Must be on of 'CPU' or 'GPU', "
