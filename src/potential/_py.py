@@ -25,16 +25,3 @@ def potential_py(particle_coords, grid_resolution, charges):
             potential_grid[
                 j, i] = V_potential(grid_pos, particle_coords, charges)
     return potential_grid
-
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-
-    particle_coords = np.array([[0.25, 0.75], [0.5, 0.25], [0.75, 0.75]])
-    grid_resolution = 10
-    charges = np.array([-1, 1, -1])
-
-    pot_grid = potential_py(particle_coords, grid_resolution, charges)
-
-    plt.imshow(pot_grid, origin="lower")
-    plt.show()
