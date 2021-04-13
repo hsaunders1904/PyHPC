@@ -10,11 +10,11 @@ __kernel void potential_cl(
     __global double *potential_grid_buf
 ) {{
 
-
     int i = get_global_id(0);
     int j = get_global_id(1);
 
     if (i >= grid_resolution || j >= grid_resolution) {
+        // Executor not required
         return;
     }
 
@@ -25,8 +25,7 @@ __kernel void potential_cl(
         y_step = y_grid_buf[j] - y_pos_buf[k];
         dist = sqrt(x_step*x_step + y_step*y_step);
 
-        index = i + grid_resolution*j;
-        potential_grid_buf[index] -= charges_buf[k]*log(dist);
+        potential_grid_buf[i + grid_resolution*j] -= charges_buf[k]*log(dist);
     }}
 }}
 """
