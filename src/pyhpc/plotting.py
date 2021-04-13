@@ -3,10 +3,14 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
 
-def plot_potential_grid(potential_grid):
-    plt.imshow(potential_grid, origin="lower")
-    plt.axis("off")
+def plot_potential_grid(potential_grid, *args):
+    num_ax = 1 + len(args)
+    fig, ax = plt.subplots(ncols=num_ax)
+    for i, grid in enumerate([potential_grid, *args]):
+        ax[i].imshow(grid, origin="lower")
+        ax[i].axis("off")
     plt.show()
+    return fig
 
 
 def _label_rects(ax, rects, yscale):
