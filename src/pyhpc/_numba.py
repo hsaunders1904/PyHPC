@@ -2,21 +2,23 @@ import numba
 import numpy as np
 
 
-@numba.jit(nopython=True, nogil=True, parallel=True, cache=True)
+@numba.jit(
+    numba.double[:, :](numba.double[:, :], numba.int32, numba.int32[:]),
+    nopython=True,
+    parallel=True,
+    nogil=True,
+    cache=True
+)
 def potential_numba(particle_coords, grid_resolution, charges):
-    potential_grid = np.zeros((grid_resolution, grid_resolution))
+    potential_grid = np.zeros((grid_resolution, grid_resolution),
+                              dtype="float64")
 
-    # Below does the equivalent of np.meshgrid(x, x), which is not
-    # allowed in numba
-    space = np.repeat(np.linspace(0, 1, grid_resolution), grid_resolution)
-    yy = space.reshape((grid_resolution, grid_resolution))
-    xx = yy.T
-
-    # Increment the matrix for each particle
-    for i in numba.prange(len(charges)):  # note TBB is required for prange
-        delta_x = np.square(xx - particle_coords[i, 0])
-        delta_y = np.square(yy - particle_coords[i, 1])
-        distance = np.sqrt(delta_x + delta_y)
-        potential_grid -= charges[i]*np.log(distance)
-
+    grid_step_denom = grid_resolution - 1
+    for n in range(charges.shape[0]):
+        for i in range(grid_resolution):
+            for j in numba.prange(grid_resolution):
+                delta_x = i/grid_step_denom - particle_coords[n, 0]
+                delta_y = j/grid_step_denom - particle_coords[n, 1]
+                euclid_distance = np.sqrt(delta_x**2 + delta_y**2)
+                potential_grid[j, i] -= charges[n]*np.log(euclid_distance)
     return potential_grid
