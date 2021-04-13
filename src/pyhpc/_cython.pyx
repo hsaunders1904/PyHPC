@@ -1,4 +1,5 @@
 import numpy as np
+from cython.parallel import prange
 cimport cython
 cimport numpy as np
 from libc.math cimport log, sqrt
@@ -19,12 +20,13 @@ cpdef np.ndarray[double, ndim=2] potential_cython(
     cdef Py_ssize_t i, j, n
 
     delta_denom = grid_resolution - 1
-    for n in range(charges.shape[0]):
-        for i in range(grid_resolution):
+    with nogil:
+        for i in prange(grid_resolution):
             for j in range(grid_resolution):
-                delta_x = i/delta_denom - particle_coords[n, 0]
-                delta_y = j/delta_denom - particle_coords[n, 1]
-                potential_grid[j, i] -= \
-                    charges[n]*log(sqrt(delta_x*delta_x + delta_y*delta_y))
+                for n in range(charges.shape[0]):
+                    delta_x = i/delta_denom - particle_coords[n, 0]
+                    delta_y = j/delta_denom - particle_coords[n, 1]
+                    potential_grid[j, i] -= \
+                        charges[n]*log(sqrt(delta_x*delta_x + delta_y*delta_y))
 
     return potential_grid
