@@ -6,39 +6,73 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 from pyhpc.potential import calculate_grid
-from pyhpc._cl_utils import get_device
 from pyhpc.utils import gen_particles, gen_charges
+from pyhpc._cl_utils import get_device
 
 
-def run_benchmarks(functions_dict, particle_coords, grid_resolutions, charges):
-    func_times = {x: [] for x in functions_dict.keys()}
-    for grid_resolution in grid_resolutions:
-        for func_name, func in functions_dict.items():
+def run_benchmarks(
+    functions_dict,
+    particle_coords,
+    grid_resolutions,
+    charges,
+    max_time,
+    plot=False,
+    plot_out_dir="."
+):
+    if plot:
+        current_time = time.strftime('%Y-%m-%d-%H-%M-%S')
+        new_dir_name = f"funcs-{current_time}"
+        new_dir = os.path.join(plot_out_dir, new_dir_name)
+        if not os.path.exists(new_dir):
+            os.makedirs(new_dir, exist_ok=True)
+    func_times = {}
+    func_std = {}
+    for i, (func_name, func) in enumerate(functions_dict.items()):
+        func_times[func_name] = []
+        func_std[func_name] = []
+        for grid_resolution in grid_resolutions:
             times = func_times[func_name]
-            # Stop benchmarking when the function
-            # takes > n seconds
-            if len(times) > 1 and times[-1] > MAX_TIME:
+            # Stop benchmarking when the function takes > n seconds
+            if len(times) > 1 and times[-1] > max_time:
                 print(f"{func_name} - {grid_resolution} - skipped")
-                continue
-            start = time.time()
-            func(particle_coords, grid_resolution, charges)
-            end = time.time()
-            func_times[func_name].append(end - start)
-            print(f"{func_name} - {grid_resolution} - {end - start:4f}s")
+                break
+
+            elapsed_time, std_dev = _time_function(
+                func, 3, particle_coords, grid_resolution, charges
+            )
+            func_times[func_name].append(elapsed_time)
+            func_std[func_name].append(std_dev)
+            print(f"{func_name} - {grid_resolution} - {elapsed_time:4f}s")
         print("")
-    return func_times
+        if plot:
+            fig = plot_benchmarks(func_times, func_std)
+            out_name = _build_plot_name(f"sub_bench-{i}{func_name}")
+            fig.savefig(os.path.join(new_dir, out_name))
+    return func_times, func_std
 
 
-def plot_benchmarks(func_times):
+def plot_benchmarks(func_times, func_std_devs):
     fig, ax = plt.subplots(figsize=(12, 6))
     for func_name, times in func_times.items():
         x = grid_resolutions[:len(times)]
-        ax.plot(x, times, label=func_name, marker="o", linestyle="")
+        ax.errorbar(
+            x,
+            times,
+            yerr=func_std_devs[func_name],
+            label=func_name,
+            marker="o",
+            linestyle=""
+        )
 
         # Fit quadratic to benchmarks; we expect time to scale
         # as grid_resolution^2
         popt, _ = curve_fit(
-            _quadratic, x, times, bounds=([0, 0], [np.inf, np.inf])
+            _quadratic,
+            x,
+            times,
+            bounds=([0, 0], [np.inf, np.inf]),
+            # +1 to avoid divsion by zero errors
+            sigma=[x + 1 for x in func_std_devs[func_name]]
         )
         x_space = np.linspace(0, x[-1]*1.1, 200)
         ax.plot(
@@ -63,17 +97,34 @@ def plot_benchmarks(func_times):
     return fig
 
 
+def _time_function(func, repetitions, *args):
+    times = []
+    for _ in range(repetitions):
+        start = time.time()
+        func(*args)
+        end = time.time()
+        times.append(end - start)
+    return np.mean(times), np.std(times, ddof=1)
+
+
+def _build_plot_name(prefix):
+    current_time = time.strftime('%Y-%m-%d-%H-%M-%S')
+    return f"{prefix}-{current_time}.png"
+
+
 def _quadratic(x, a, b):
     """Quadratic that goes through origin"""
     return a*x**2 + b*x
 
 
 if __name__ == "__main__":
+    ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+
     num_particles = 10
     particle_coords = gen_particles(num_particles)
     grid_resolutions = [50, 100, 200, 300, 500, 750, 1000, 1500, 3000, 5000]
     charges = gen_charges(num_particles)
-    MAX_TIME = 3  # seconds
+    max_time = 4  # seconds
 
     functions_dict = {
         "python": lambda *args: calculate_grid(*args, func="python"),
@@ -97,8 +148,11 @@ if __name__ == "__main__":
     }
 
     times = run_benchmarks(
-        functions_dict, particle_coords, grid_resolutions, charges
+        functions_dict,
+        particle_coords,
+        grid_resolutions,
+        charges,
+        max_time,
+        plot=True,
+        plot_out_dir=os.path.join(ROOT_DIR, ".benchmarks")
     )
-    fig = plot_benchmarks(times)
-    fig.savefig(f"benchmarks-{time.strftime('%Y-%m-%d-%H-%M-%S')}.png")
-    plt.show()
