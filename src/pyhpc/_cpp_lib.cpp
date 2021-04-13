@@ -9,21 +9,6 @@
 
 namespace py = pybind11;
 
-double V_potential(const std::array<double, 2> &grid_pos,
-                   const double *x_coords, const double *y_coords,
-                   const int *charges, const std::size_t num_particles) {
-  double v = 0;
-  for (std::size_t i = 0; i < num_particles; ++i) {
-    double delta_x = grid_pos[0] - x_coords[i];
-    double delta_y = grid_pos[1] - y_coords[i];
-    double dist = sqrt(delta_x * delta_x + delta_y * delta_y);
-    if (dist > 0) {
-      v -= charges[i] * log(dist);
-    }
-  }
-  return v;
-}
-
 std::unique_ptr<double[]> calc_potential_grid(const double *x_coords,
                                               const double *y_coords,
                                               const std::size_t grid_resolution,
@@ -34,18 +19,20 @@ std::unique_ptr<double[]> calc_potential_grid(const double *x_coords,
       new double[grid_resolution * grid_resolution]);
 
   const double grid_step_denom = static_cast<double>(grid_resolution) - 1.0;
-  std::array<double, 2> grid_pos;
 
 #pragma omp parallel firstprivate(grid_step_denom), private(grid_pos),         \
     num_threads(num_threads)
   {
+    for (std::size_t n = 0; n < num_particles; ++n) {
+      for (std::size_t i = 0; i < grid_resolution; ++i) {
 #pragma omp for schedule(static)
-    for (long i = 0; i < grid_resolution; ++i) {
-      for (long j = 0; j < grid_resolution; ++j) {
-        grid_pos = {i / grid_step_denom, j / grid_step_denom};
-        auto v =
-            V_potential(grid_pos, x_coords, y_coords, charges, num_particles);
-        potential_grid[i + grid_resolution * j] = v;
+        for (long j = 0; j < grid_resolution; ++j) {
+          double delta_x = i / grid_step_denom - x_coords[n];
+          double delta_y = j / grid_step_denom - y_coords[n];
+          double euclid_distance = sqrt(delta_x * delta_x + delta_y * delta_y);
+          std::size_t idx = i + grid_resolution * j;
+          potential_grid[idx] -= charges[n] * log(euclid_distance);
+        }
       }
     }
   }

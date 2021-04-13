@@ -19,9 +19,9 @@ cpdef np.ndarray[double, ndim=2] potential_cython(
     cdef Py_ssize_t i, j, n
 
     delta_denom = grid_resolution - 1
-    for i in range(grid_resolution):
-        for j in range(grid_resolution):
-            for n in range(charges.shape[0]):
+    for n in range(charges.shape[0]):
+        for i in range(grid_resolution):
+            for j in range(grid_resolution):
                 delta_x = i/delta_denom - particle_coords[n, 0]
                 delta_y = j/delta_denom - particle_coords[n, 1]
                 potential_grid[j, i] -= \
