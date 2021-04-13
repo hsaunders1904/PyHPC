@@ -23,9 +23,11 @@ def potential_cpp(particle_coords, grid_resolution, charges, num_threads=1):
     :type num_thread: int
     """
     particle_coords = particle_coords.astype(np.float64)
+    grid_resolution = int(grid_resolution)
     charges = charges.astype(np.int32)
+    num_threads = int(num_threads)
     grid = calc_potential_grid(
-        particle_coords[:, 0], particle_coords[:, 1], grid_resolution, charges,
+        particle_coords[:, 0], particle_coords[:, 1], int(grid_resolution), charges,
         num_threads
     )
     return np.reshape(grid, (grid_resolution, grid_resolution))
