@@ -3,8 +3,20 @@ from pyhpc._numpy import potential_np
 from pyhpc._py import potential_py
 from pyhpc._numba import potential_numba
 from pyhpc._cython import potential_cython
-from pyhpc._cl import potential_cl_cpu, potential_cl_gpu
-from pyhpc._cuda import potential_cuda
+try:
+    from pyhpc._cl import potential_cl_cpu, potential_cl_gpu
+    _NO_CL = False
+except ImportError:
+    import warnings
+    warnings.warn("Could not import OpenCL extensions")
+    _NO_CL = True
+try:
+    from pyhpc._cuda import potential_cuda
+    _NO_CUDA = False
+except ImportError:
+    import warnings
+    warnings.warn("Could not import Cuda extensions")
+    _NO_CUDA = True
 
 
 def calculate_grid(
@@ -59,6 +71,8 @@ def calculate_grid(
     elif func.lower() == "cpp":
         return potential_cpp(*args, **kwargs)
     elif func.lower() in ["cl", "opencl"]:
+        if _NO_CL:
+            raise ValueError("OpenCL extension is not installed/enabled.")
         device_type = kwargs.pop("device_type", "CPU")
         if device_type == "CPU":
             return potential_cl_cpu(*args)
@@ -70,6 +84,8 @@ def calculate_grid(
                 f"found {device_type}."
             )
     elif func.lower() == "cuda":
+        if _NO_CUDA:
+            raise ValueError("Cuda extension is not installed/enabled.")
         return potential_cuda(*args)
     else:
         raise ValueError("Invalid value for 'func'.")
