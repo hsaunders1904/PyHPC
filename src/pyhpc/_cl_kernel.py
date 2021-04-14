@@ -19,12 +19,12 @@ __kernel void potential_cl(
     int index;
     double grid_step_denom = grid_resolution - 1.0;
     double x_step, y_step, dist;
-    for (int k = 0; k < num_particles; ++k) {{
-        x_step = i/grid_step_denom - x_pos_buf[k];
-        y_step = j/grid_step_denom - y_pos_buf[k];
+    for (int n = 0; n < num_particles; ++n) {{
+        x_step = i/grid_step_denom - x_pos_buf[n];
+        y_step = j/grid_step_denom - y_pos_buf[n];
         dist = sqrt(x_step*x_step + y_step*y_step);
 
-        potential_grid_buf[i + grid_resolution*j] -= charges_buf[k]*log(dist);
+        potential_grid_buf[i + grid_resolution*j] -= charges_buf[n]*log(dist);
     }}
 }}
 """
