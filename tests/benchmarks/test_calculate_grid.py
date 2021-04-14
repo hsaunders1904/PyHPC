@@ -60,7 +60,7 @@ class TestPotentialBenchmark:
         if kwargs.get("func") == "python":
             pytest.skip("Python implementation only run on small grid")
 
-        num_particles, grid_resolution = 20, 512
+        num_particles, grid_resolution = 20, 1024
         particle_coords, charges = self.get_particles(num_particles)
 
         args = (particle_coords, grid_resolution, charges)
