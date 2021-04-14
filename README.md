@@ -97,3 +97,13 @@ For now, you can only run the MPI implementation from the command line:
 ```shell
 >> mpiexec -n 4 python -m pyhpc.mpi 150 1024 --dist random --func cython
 ```
+
+## Tests
+
+To test your installation, install `pytest` and run the following.
+
+```shell
+>> pytest tests -k "not benchmarks"
+```
+
+This is a good way to validate everything is correctly installed and compiled.
