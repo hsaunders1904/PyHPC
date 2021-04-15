@@ -10,11 +10,7 @@ ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def read_requirements_file():
-    if platform.system() == "Windows":
-        req_file_name = "requirements_win10.txt"
-    else:
-        req_file_name = "requirements_linux.txt"
-    with open(os.path.join(ROOT_DIR, req_file_name), "r") as f:
+    with open(os.path.join(ROOT_DIR, "requirements.txt"), "r") as f:
         return [req.strip() for req in f.readlines()]
 
 
