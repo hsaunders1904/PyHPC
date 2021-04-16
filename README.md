@@ -11,10 +11,8 @@ The example is implemented, and benchmarked, using several tools:
 - Numpy
 - Numba
 - Cython
-- C++ with pybind11
-  - with multithreading using OpenMP
+- C++ (with pybind11)
 - PyOpenCL
-  - with use of GPU
 - PyCuda
 - MPI
 
@@ -25,8 +23,9 @@ and install the dependencies.
 
 ```shell
 >> git clone https://github.com/hsaunders1904/PyHPC
->> conda create -n hpc python=3.7 --file PyHPC/requirements.txt
+>> conda create -n hpc python=3.7 -c conda-forge
 >> conda activate hpc
+>> conda install --file requirements.txt -c conda-forge
 >> pip install ./PyHPC --no-deps
 ```
 
@@ -36,7 +35,7 @@ you'll need a compiler e.g. Visual Studio on Windows, or g++ on Linux.
 ### OpenCL
 
 To use the PyOpenCL functions you'll need to install the OpenCL runtimes for
-your processor and the `pyopencl` pip wheel.
+your processor.
 
 You can find the OpenCL runtimes for Intel processors and GPUs
 [here](https://software.intel.com/content/www/us/en/develop/articles/opencl-drivers.html).
@@ -47,25 +46,30 @@ You have to register for an account before downloading.
 If you haven't got an Intel processor,
 you'll have to Google for the relevant runtimes.
 
-The pip-installable wheel can be downloaded from
-[here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyopencl).
-Make sure you download the correct wheel for your system:
-I'm using CPython 3.7 on Windows with a processor with an amd64 architecture,
-so I'd download `pyopencl‑2021.1.5+cl21‑cp37‑cp37m‑win_amd64.whl`.
-
-If you're using `conda`, install the wheel using the `--no-deps` argument.
-All the requirements should be covered by the requirements file in this repo.
-
 ### Cuda
 
 To use the Cuda extension, you'll need a Cuda compatible device
 (e.g. an NVIDIA GPU), to install the
 [Cuda toolkit](https://developer.nvidia.com/cuda-downloads),
-and pip install the corresponding
-[`pycuda` wheel](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycuda).
+and install `pycuda`.
 
-Again, if you're using `conda`,
-use the `--no-deps` flag when pip installing the wheel file.
+#### Windows
+
+As of time of writing there's no `pycuda` conda package for Windows.
+Installing through `pip` should work:
+
+```shell
+>> pip install pycuda>=2021.1 --no-deps
+```
+
+#### Linux
+
+There's a conda package for 64-bit `pycuda` on Linux,
+so you can install it from `conda-forge`:
+
+```shell
+>> conda install pycuda>=2021.1 -c conda-forge
+```
 
 ## Usage
 
@@ -100,10 +104,11 @@ For now, you can only run the MPI implementation from the command line:
 
 ## Tests
 
-To test your installation, install `pytest` and run the following.
+To test your installation, install and run `pytest`.
 
 ```shell
->> pytest tests -k "not benchmarks"
+>> conda install pytest -c conda-forge
+>> pytest ./tests -k "not benchmarks"
 ```
 
 This is a good way to validate everything is correctly installed and compiled.
