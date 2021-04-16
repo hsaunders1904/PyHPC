@@ -6,8 +6,6 @@ KERNEL = f"""
     __global__ void {FUNC_NAME}(
         const {c_dtype} *x_pos,
         const {c_dtype} *y_pos,
-        const {c_dtype} *x_grid,
-        const {c_dtype} *y_grid,
         const int *charges,
         const int grid_resolution,
         const int num_particles,
@@ -21,10 +19,11 @@ KERNEL = f"""
         }}
 
         int index;
+        {c_dtype} grid_step_denom = grid_resolution - 1.0;
         {c_dtype} x_step, y_step, dist;
         for (int k = 0; k < num_particles; ++k) {{
-            x_step = x_grid[i] - x_pos[k];
-            y_step = y_grid[j] - y_pos[k];
+            x_step = i/grid_step_denom - x_pos[k];
+            y_step = j/grid_step_denom - y_pos[k];
             dist = sqrt(x_step*x_step + y_step*y_step);
 
             index = i + grid_resolution*j;

@@ -37,8 +37,7 @@ class _PotentialCL:
         )
 
         global_id_sizes = (
-            math.ceil(grid_resolution/4)*4,
-            math.ceil(grid_resolution/4)*4,
+            math.ceil(grid_resolution/4)*4, math.ceil(grid_resolution/4)*4
         )
 
         kernel_args = (
@@ -58,19 +57,15 @@ class _PotentialCL:
         )
 
 
-_CPU = _PotentialCL(KERNEL, device_type="CPU")
-_GPU = _PotentialCL(KERNEL, device_type="GPU")
+_CPU_PROG = _PotentialCL(KERNEL, device_type="CPU")
+_GPU_PROG = _PotentialCL(KERNEL, device_type="GPU")
 
 
 def _potential_cl(particle_coords, grid_resolution, charges, device_type):
     if device_type == "CPU":
-        func = _CPU.run
+        func = _CPU_PROG.run
     elif device_type == "GPU":
-        func = _GPU.run
-
-    particle_coords = particle_coords.astype("float64")
-    grid_resolution = np.int32(grid_resolution)
-    charges = charges.astype("int32")
+        func = _GPU_PROG.run
     return func(particle_coords, grid_resolution, charges)
 
 
