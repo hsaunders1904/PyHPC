@@ -17,6 +17,8 @@ class _PotentialCuda:
         # All numpy arrays must be C contiguous to pass to Cuda
         x_pos = np.ascontiguousarray(particle_coords[:, 0], dtype=self._dtype)
         y_pos = np.ascontiguousarray(particle_coords[:, 1], dtype=self._dtype)
+        grid_resolution = np.int32(grid_resolution)
+        charges = np.ascontiguousarray(charges, dtype="int32")
         num_particles = np.int32(particle_coords.shape[0])
         potential_grid = np.zeros((1, grid_resolution**2), dtype=self._dtype)
 
@@ -31,7 +33,7 @@ class _PotentialCuda:
             drv.In(x_pos),
             drv.In(y_pos),
             drv.In(charges),
-            np.int32(grid_resolution),
+            grid_resolution,
             num_particles,
             drv.Out(potential_grid),
         )

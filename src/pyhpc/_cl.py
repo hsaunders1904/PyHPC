@@ -23,10 +23,12 @@ class _PotentialCL:
         self.program = cl.Program(self.context, kernel).build()
 
     def run(self, particle_coords, grid_resolution, charges):
-        x_pos = particle_coords[:, 0].astype("float64")
-        y_pos = particle_coords[:, 1].astype("float64")
-        num_particles = np.int32(charges.shape[0])
-        potential_grid = np.zeros(grid_resolution**2, dtype="float64")
+        x_pos = np.ascontiguousarray(particle_coords[:, 0], dtype="float64")
+        y_pos = np.ascontiguousarray(particle_coords[:, 1], dtype="float64")
+        grid_resolution = np.int32(grid_resolution)
+        charges = np.ascontiguousarray(charges, dtype="int32")
+        num_particles = np.int32(particle_coords.shape[0])
+        potential_grid = np.zeros((1, grid_resolution**2), dtype="float64")
 
         # Create the OpenCL memory buffers to pass to the kernel
         x_pos_buf = self._get_buffer(x_pos, self.mf.READ_ONLY)
