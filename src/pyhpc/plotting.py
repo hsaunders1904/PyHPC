@@ -5,10 +5,12 @@ from matplotlib.colors import LogNorm
 
 def plot_potential_grid(potential_grid, *args):
     num_ax = 1 + len(args)
-    fig, ax = plt.subplots(ncols=num_ax)
-    for i, grid in enumerate([potential_grid, *args]):
-        ax[i].imshow(grid, origin="lower")
-        ax[i].axis("off")
+    fig, axes = plt.subplots(ncols=num_ax)
+    if num_ax == 1:
+        axes = [axes]
+    for ax, grid in zip(axes, [potential_grid, *args]):
+        ax.imshow(grid, origin="lower")
+        ax.axis("off")
     plt.show()
     return fig
 
