@@ -17,7 +17,7 @@ cpdef np.ndarray[double, ndim=2] potential_cython(
         potential_grid = np.zeros((grid_resolution, grid_resolution))
 
     cdef double delta_x, delta_y, delta_denom
-    cdef Py_ssize_t i, j, n
+    cdef int i, j, n
 
     delta_denom = grid_resolution - 1
     with nogil:
