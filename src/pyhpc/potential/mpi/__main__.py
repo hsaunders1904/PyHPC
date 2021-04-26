@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from pyhpc.mpi._mpi import run_and_plot
+from pyhpc.potential.mpi._mpi import run_and_plot
 
 parser = ArgumentParser("Run calculate_grid using MPI.")
 parser.add_argument("num_particles", type=int)
