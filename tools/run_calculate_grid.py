@@ -67,4 +67,6 @@ if __name__ == "__main__":
         print(f"Function call took {elapsed_time} seconds using {func_name}")
 
     if cli_args.plot:
-        plot_potential_grid(*grids)
+        fig, _ = plot_potential_grid(*grids)
+        fig.show()
+        input("Press enter to close...")
