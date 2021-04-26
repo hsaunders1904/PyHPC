@@ -45,13 +45,13 @@ def run_benchmarks(
             print(f"{func_name} - {grid_resolution} - {elapsed_time:4f}s")
         print("")
         if plot:
-            fig = plot_benchmarks(func_times, func_std)
+            fig = plot_benchmarks(func_times, func_std, len(particle_coords))
             out_name = _build_plot_name(f"sub_bench-{i}{func_name}")
             fig.savefig(os.path.join(new_dir, out_name))
     return func_times, func_std
 
 
-def plot_benchmarks(func_times, func_std_devs):
+def plot_benchmarks(func_times, func_std_devs, num_particles):
     fig, ax = plt.subplots(figsize=(12, 6))
     for func_name, times in func_times.items():
         x = grid_resolutions[:len(times)]
@@ -86,7 +86,7 @@ def plot_benchmarks(func_times, func_std_devs):
     cpu_device = get_device("CPU")
     gpu_device = get_device('GPU')
     ax.set_title(
-        f"Function Benchmarks\n"
+        f"Function Benchmarks ({num_particles} particles)\n"
         f"CPU: {cpu_device.name}, {cpu_device.max_compute_units} cores\n"
         f"GPU: {gpu_device.name}, {gpu_device.max_compute_units} cores"
     )
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         "numba": lambda *args: calculate_grid(*args, func="numba"),
         "cython": lambda *args: calculate_grid(*args, func="cython"),
         "cpp": lambda *args: calculate_grid(*args, func="cpp", num_threads=1),
-        "cpp_omp": (
+        "cpp-omp": (
             lambda *args:
             calculate_grid(*args, func="cpp", num_threads=os.cpu_count())
         ),
