@@ -4,7 +4,7 @@ import numpy as np
 import pyopencl as cl
 
 from pyhpc._cl_utils import get_device
-from pyhpc._cl_kernel import KERNEL
+from ._cl_kernel import KERNEL
 
 
 class _PotentialCL:

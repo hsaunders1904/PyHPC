@@ -5,7 +5,6 @@
 #include <cmath>
 #include <memory>
 #include <omp.h>
-#include <vector>
 
 namespace py = pybind11;
 

@@ -7,6 +7,7 @@ import pybind11
 from Cython.Build import cythonize
 
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
+POTENTIAL_SRC_DIR = os.path.join(ROOT_DIR, "src", "pyhpc", "potential")
 
 
 def read_requirements_file():
@@ -21,16 +22,23 @@ elif platform.system() == "Linux":
 
 cython_ext = cythonize(
     extension.Extension(
-        "pyhpc._cython",
-        [os.path.join(ROOT_DIR, "src", "pyhpc", "_cython.pyx")],
+        "pyhpc.potential._calculate_grid_impls._cython", [
+            os.path.join(
+                POTENTIAL_SRC_DIR, "_calculate_grid_impls", "_cython.pyx"
+            )
+        ],
         include_dirs=[np.get_include()],
         extra_compile_args=extra_compile_args
     )
 )[0]
 
 cpp_ext = extension.Extension(
-    "pyhpc._cpp_lib",
-    sources=[os.path.join(ROOT_DIR, "src", "pyhpc", "_cpp_lib.cpp")],
+    "pyhpc.potential._calculate_grid_impls._cpp_lib",
+    sources=[
+        os.path.join(
+            POTENTIAL_SRC_DIR, "_calculate_grid_impls", "_cpp_lib.cpp"
+        )
+    ],
     include_dirs=[pybind11.get_include()],
     language="c++",
     extra_compile_args=extra_compile_args

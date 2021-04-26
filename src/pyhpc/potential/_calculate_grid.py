@@ -1,17 +1,17 @@
-from pyhpc._cpp import potential_cpp
-from pyhpc._numpy import potential_np
-from pyhpc._py import potential_py
-from pyhpc._numba import potential_numba
-from pyhpc._cython import potential_cython
+from ._calculate_grid_impls._cpp import potential_cpp
+from ._calculate_grid_impls._numpy import potential_np
+from ._calculate_grid_impls._py import potential_py
+from ._calculate_grid_impls._numba import potential_numba
+from ._calculate_grid_impls._cython import potential_cython
 try:
-    from pyhpc._cl import potential_cl_cpu, potential_cl_gpu
+    from ._calculate_grid_impls._cl import potential_cl_cpu, potential_cl_gpu
     _NO_CL = False
 except ImportError:
     import warnings
     warnings.warn("Could not import OpenCL extensions")
     _NO_CL = True
 try:
-    from pyhpc._cuda import potential_cuda
+    from ._calculate_grid_impls._cuda import potential_cuda
     _NO_CUDA = False
 except ImportError:
     import warnings

@@ -2,8 +2,7 @@ import numpy as np
 
 
 def potential_py(particle_coords, grid_resolution, charges):
-    potential_grid = np.zeros((grid_resolution, grid_resolution),
-                              dtype="float64")
+    potential_grid = np.zeros((grid_resolution, grid_resolution))
 
     grid_step_denom = grid_resolution - 1
     for i in range(grid_resolution):
