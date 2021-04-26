@@ -68,11 +68,13 @@ def plot_benchmarks(results_dict, labels=None):
     fig, ax = plt.subplots(figsize=(12, 6))
     for label, times in results_dict.items():
         if not labels or label in labels:
-            grid_res = grid_resolutions[:len(times)]
+            grid_res = results_dict["grid_resolutions"][:len(times)]
             line = _plot_errobar(ax, grid_res, times, label)
             _plot_best_fit(ax, grid_res, times, color=line[0].get_color())
 
-    ax.set_title(_generate_benchmark_title(num_particles))
+    ax.set_title(
+        _generate_benchmark_title(results_dict["args"]["num_particles"])
+    )
     ax.set_xlabel("Grid Resolution")
     ax.set_ylabel("Execution Time (s)")
     ax.grid(linewidth=0.2)
@@ -151,7 +153,7 @@ def _write_json(dict_object, file_path):
         json.dump(dict_object, f, indent=2)
 
 
-def _plot_benchmarks_recursive(labels, plot_dir):
+def _plot_benchmarks_recursive(times, labels, plot_dir):
     to_plot = []
     for i, label in enumerate(labels):
         to_plot.append(label)
@@ -225,4 +227,4 @@ if __name__ == "__main__":
 
     plot_dir = _create_plot_dir()
     _write_json(times, os.path.join(plot_dir, "results.json"))
-    _plot_benchmarks_recursive(functions_dict.keys(), plot_dir)
+    _plot_benchmarks_recursive(times, functions_dict.keys(), plot_dir)
