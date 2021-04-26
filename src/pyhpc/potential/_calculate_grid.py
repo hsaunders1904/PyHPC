@@ -1,22 +1,23 @@
+from logging import error
 from ._calculate_grid_impls._cpp import potential_cpp
 from ._calculate_grid_impls._numpy import potential_np
 from ._calculate_grid_impls._py import potential_py
 from ._calculate_grid_impls._numba import potential_numba
 from ._calculate_grid_impls._cython import potential_cython
-try:
-    from ._calculate_grid_impls._cl import potential_cl_cpu, potential_cl_gpu
-    _NO_CL = False
-except ImportError:
-    import warnings
-    warnings.warn("Could not import OpenCL extensions")
-    _NO_CL = True
-try:
-    from ._calculate_grid_impls._cuda import potential_cuda
-    _NO_CUDA = False
-except ImportError:
-    import warnings
-    warnings.warn("Could not import Cuda extensions")
-    _NO_CUDA = True
+# try:
+#     from ._calculate_grid_impls._cl import potential_cl_cpu, potential_cl_gpu
+#     _NO_CL = False
+# except ImportError:
+#     import warnings
+#     warnings.warn("Could not import OpenCL extensions")
+#     _NO_CL = True
+# try:
+#     from ._calculate_grid_impls._cuda import potential_cuda
+#     _NO_CUDA = False
+# except ImportError:
+#     import warnings
+#     warnings.warn("Could not import Cuda extensions")
+#     _NO_CUDA = True
 
 
 def calculate_grid(
@@ -71,21 +72,40 @@ def calculate_grid(
     elif func.lower() == "cpp":
         return potential_cpp(*args, **kwargs)
     elif func.lower() in ["cl", "opencl"]:
-        if _NO_CL:
-            raise ValueError("OpenCL extension is not installed/enabled.")
         device_type = kwargs.pop("device_type", "CPU")
-        if device_type == "CPU":
-            return potential_cl_cpu(*args)
-        elif device_type == "GPU":
-            return potential_cl_gpu(*args)
-        else:
-            raise ValueError(
-                f"Invalid device type. Must be on of 'CPU' or 'GPU', "
-                f"found {device_type}."
-            )
+        cl_func = _import_cl(device_type)
+        return cl_func(*args)
     elif func.lower() == "cuda":
-        if _NO_CUDA:
-            raise ValueError("Cuda extension is not installed/enabled.")
+        potential_cuda = _import_cuda()
         return potential_cuda(*args)
     else:
         raise ValueError("Invalid value for 'func'.")
+
+
+def _import_cuda():
+    try:
+        from ._calculate_grid_impls._cuda import potential_cuda
+    except ImportError as import_error:
+        err_msg = "Cuda extension is not installed/enabled."
+        raise ValueError(err_msg) from import_error
+    return potential_cuda
+
+
+def _import_cl(device_type):
+    try:
+        from ._calculate_grid_impls._cl import (
+            potential_cl_cpu, potential_cl_gpu
+        )
+    except ImportError as import_error:
+        err_msg = "OpenCL extension is not installed/enabled."
+        raise ValueError(err_msg) from import_error
+
+    if device_type == "CPU":
+        return potential_cl_cpu
+    elif device_type == "GPU":
+        return potential_cl_gpu
+    else:
+        raise ValueError(
+            f"Invalid device type. Must be on of 'CPU' or 'GPU', "
+            f"found {device_type}."
+        )

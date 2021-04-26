@@ -59,21 +59,31 @@ class _PotentialCL:
         )
 
 
-_CPU_PROG = _PotentialCL(KERNEL, device_type="CPU")
-_GPU_PROG = _PotentialCL(KERNEL, device_type="GPU")
+class _ClProgs:
+    """
+    Class to hold _PotentialCL objects with compiled OpenCL kernels.
+    This allows us to compile the kernels when required, but also only
+    compile them once per session.
+    """
+    CPU = None
+    GPU = None
 
 
 def _potential_cl(particle_coords, grid_resolution, charges, device_type):
     if device_type == "CPU":
-        func = _CPU_PROG.run
+        func = _ClProgs.CPU.run
     elif device_type == "GPU":
-        func = _GPU_PROG.run
+        func = _ClProgs.GPU.run
     return func(particle_coords, grid_resolution, charges)
 
 
 def potential_cl_cpu(particle_coords, grid_resolution, charges):
+    if _ClProgs.CPU is None:
+        _ClProgs.CPU = _PotentialCL(KERNEL, device_type="CPU")
     return _potential_cl(particle_coords, grid_resolution, charges, "CPU")
 
 
 def potential_cl_gpu(particle_coords, grid_resolution, charges):
+    if _ClProgs.GPU is None:
+        _ClProgs.GPU = _PotentialCL(KERNEL, device_type="GPU")
     return _potential_cl(particle_coords, grid_resolution, charges, "GPU")
