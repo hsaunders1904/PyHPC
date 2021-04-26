@@ -1,5 +1,6 @@
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+from matplotlib import animation
 from matplotlib.colors import LogNorm
 
 
@@ -9,10 +10,14 @@ def plot_potential_grid(potential_grid, *args):
     if num_ax == 1:
         axes = [axes]
     for ax, grid in zip(axes, [potential_grid, *args]):
-        ax.imshow(grid, origin="lower")
-        ax.axis("off")
-    plt.show()
-    return fig
+        ax = _plot_grid(grid, ax)
+    return fig, axes
+
+
+def _plot_grid(grid, ax, **imshow_kwargs):
+    ax.imshow(grid, origin="lower", **imshow_kwargs)
+    ax.axis("off")
+    return ax
 
 
 def _label_rects(ax, rects, yscale):
@@ -55,3 +60,18 @@ def plot_bar_chart(
     ax.set_ylabel(ylabel)
     ax.set_title(title)
     return fig, ax
+
+
+def animate_frames(frames):
+    fig, ax = plt.subplots()
+    ax = _plot_grid(frames[:, :, 0], ax)
+    img = ax.get_images()[0]
+
+    def animate_img(i):
+        img.set_array(frames[:, :, i + 1])
+        return [img]
+
+    num_frames = frames.shape[2]
+    return animation.FuncAnimation(
+        fig, animate_img, frames=num_frames - 1, interval=50
+    )
