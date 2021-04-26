@@ -99,7 +99,7 @@ plot_potential_grid(potential_grid)
 For now, you can only run the MPI implementation from the command line:
 
 ```shell
->> mpiexec -n 4 python -m pyhpc.mpi 150 1024 --dist random --func cython
+>> mpiexec -n 4 python -m pyhpc.potential.mpi 150 1024 --dist random --func cython
 ```
 
 ## Tests
